@@ -40,6 +40,9 @@ public class Server
 	{
 		try 
 		{
+			String portConfig = config.get(PORT);
+			int port = portConfig != null ? Integer.parseInt(portConfig) : 0;
+			
 			this.serverSocket = new ServerSocket(port);
 			
 			listener = new RequestListenerThread(serverSocket);
@@ -74,7 +77,8 @@ public class Server
 	@Modified
 	private void modified(Map<String, String> config)
 	{
-		this.port = Integer.parseInt(config.get(PORT));
+		String portConfig = config.get(PORT);
+		this.port = portConfig != null ? Integer.parseInt(portConfig) : 0;
 		LOG.info("Updating server with new port" + port );
 		
 		//deactivate();
