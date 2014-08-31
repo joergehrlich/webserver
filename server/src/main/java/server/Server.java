@@ -1,11 +1,5 @@
 package server;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Map;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -27,9 +21,9 @@ public class Server
 	@Property(value = "20")
 	static final String THREADPOOL_SIZE = "threadpoolSize";
 	
-	private ServerSocket serverSocket;
+	private SocketConnector connector;
 	private int port;
-	private RequestListenerThread listener;
+	private Handler handler;
 	
 	/**
 	 * 
@@ -43,13 +37,14 @@ public class Server
 			String portConfig = config.get(PORT);
 			int port = portConfig != null ? Integer.parseInt(portConfig) : 0;
 			
-			this.serverSocket = new ServerSocket(port);
+			handler = new HTTPHandler();
 			
-			listener = new RequestListenerThread(serverSocket);
-			listener.setDaemon(false);
-			listener.start();
+			this.connector = new SocketConnector();
+			connector.setPort(port);
+			connector.setServer(this);
+			connector.start();
 		} 
-		catch (IOException e) 
+		catch (Exception e) 
 		{
 			LOG.error("Cannot open Server on port " + port, e);
 		}
@@ -63,9 +58,9 @@ public class Server
 	{
 		try 
 		{
-			listener.stopIt();
+			connector.stop();
         } 
-		catch (IOException e) 
+		catch (Exception e) 
 		{
 			LOG.error("Error closing server", e);
         }
@@ -81,77 +76,19 @@ public class Server
 		this.port = portConfig != null ? Integer.parseInt(portConfig) : 0;
 		LOG.info("Updating server with new port" + port );
 		
-		//deactivate();
+		deactivate();
+		activate(config);
 	}
 	
-	static class RequestListenerThread extends Thread {
-
-		private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-        private final ServerSocket serversocket;
-        private boolean isStopped = false;
-        
-        public RequestListenerThread( final ServerSocket sf){
-            this.serversocket = sf;
-        }
-
-        public synchronized void stopIt() throws IOException
-        {
-            this.isStopped = true;
-            this.serversocket.close();
-        }
-        
-        @Override
-        public void run() {
-        	LOG.info("Listening on port " + this.serversocket.getLocalPort());
-            while (!isStopped) {
-                try {
-                    // Set up HTTP connection
-                    Socket socket = this.serversocket.accept();
-                    LOG.info("Incoming connection from " + socket.getInetAddress());
-
-                    // Start worker thread
-                    Thread t = new WorkerThread(socket);
-                    t.setDaemon(true);
-                    t.start();
-                } catch (InterruptedIOException ex) {
-                    break;
-                } catch (IOException e) {
-                	LOG.error("I/O error initialising connection thread: "
-                            + e.getMessage());
-                    break;
-                }
-            }
-        }
-    }
+	public void dispatch(Runnable job)
+	{
+		Thread t = new Thread(job);
+        t.setDaemon(true);
+        t.start();
+	}
 	
-	
-	static class WorkerThread extends Thread {
-
-		private final Logger LOG = LoggerFactory.getLogger(this.getClass());
-		
-		private Socket socket;
-        
-		public WorkerThread(final Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-        	LOG.info("New connection thread");
-            try {
-            	InputStream input  = socket.getInputStream();
-                OutputStream output = socket.getOutputStream();
-                long time = System.currentTimeMillis();
-                output.write(("HTTP/1.1 200 OK\n\nWorkerThread: " +
-                        time +
-                        "").getBytes());
-                output.close();
-                input.close();
-                LOG.info("Request processed: " + time);
-            } catch (Exception ex) {
-            	LOG.error("Error handling request");
-            } 
-        }
-
-    }
+	public void handle(Connection conn)
+	{
+		handler.handle(conn);
+	}
 }
