@@ -1,9 +1,9 @@
 package server;
 
+import org.apache.http.HttpServerConnection;
 
-public interface Handler 
+public interface Handler
 {
-	public void handle(Connection conn);
-
+	public void handle(HttpServerConnection conn);
 
 }
