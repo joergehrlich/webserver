@@ -1,4 +1,10 @@
-package server.resource;
+package info.jehrlich.server.resource.file;
+
+import info.jehrlich.server.resource.Resource;
+import info.jehrlich.server.resource.ResourceAccessException;
+import info.jehrlich.server.resource.ResourceException;
+import info.jehrlich.server.resource.ResourceFactory;
+import info.jehrlich.server.resource.ResourceNotFoundException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,18 +50,24 @@ public class FileResourceFactory implements ResourceFactory
 	 * 
 	 * @see server.resource.ResourceFactorz#create(java.lang.String)
 	 */
-	public Resource create(String path) throws Exception
+	public Resource create(String path) throws ResourceException
 	{
 		if( rootDir == null)
-			throw new Exception("Initialize first");
+		{
+			throw new ResourceException("Initialize first");
+		}
 		
 		File file = new File(rootDir, path);
 
 		if (!file.exists())
 		{
-			throw new FileNotFoundException();
+			throw new ResourceNotFoundException();
 		}
-
+		if( !file.canRead() )
+		{
+			throw new ResourceAccessException(); 
+		}
+		
 		return file.isDirectory() ? new DirectoryResource(rootDir, file) : new FileResource(file);
 	}
 

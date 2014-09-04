@@ -1,4 +1,7 @@
-package server.resource;
+package info.jehrlich.server.resource.file;
+
+import info.jehrlich.server.resource.ResourceFactory;
+import info.jehrlich.server.resource.ResourceProvider;
 
 // will be a service and component
 public class FileResourceProvider implements ResourceProvider

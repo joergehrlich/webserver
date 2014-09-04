@@ -1,4 +1,4 @@
-package server;
+package info.jehrlich.server;
 
 /**
  * Connector interface. 

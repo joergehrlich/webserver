@@ -1,4 +1,4 @@
-package server.resource;
+package info.jehrlich.server.resource;
 
 public interface ResourceProvider
 {

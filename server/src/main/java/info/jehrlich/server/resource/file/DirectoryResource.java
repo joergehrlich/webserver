@@ -1,10 +1,16 @@
-package server.resource;
+package info.jehrlich.server.resource.file;
+
+import info.jehrlich.server.impl.SocketConnector;
+import info.jehrlich.server.resource.MimeType;
+import info.jehrlich.server.resource.Resource;
+import info.jehrlich.server.resource.ResourceNotFoundException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -14,8 +20,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import server.SocketConnector;
 
 /**
  * {@link Resource} implementation representing a directory under the current
@@ -225,6 +229,12 @@ public class DirectoryResource implements Resource {
 			xml.writeEndElement();
 			xml.writeEndElement();
 		}
+	}
+
+	public OutputStream getContentWriter() throws ResourceNotFoundException
+	{
+		// TODO
+		throw new ResourceNotFoundException();
 	}
 
 

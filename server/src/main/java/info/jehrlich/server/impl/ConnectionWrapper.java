@@ -1,4 +1,7 @@
-package server;
+package info.jehrlich.server.impl;
+
+import info.jehrlich.server.Connection;
+import info.jehrlich.server.Server;
 
 import java.io.IOException;
 

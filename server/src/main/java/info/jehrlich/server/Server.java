@@ -1,4 +1,7 @@
-package server;
+package info.jehrlich.server;
+
+import info.jehrlich.server.impl.HTTPHandler;
+import info.jehrlich.server.impl.SocketConnector;
 
 import java.util.Map;
 
@@ -49,7 +52,7 @@ public class Server
 
 			handler = new HTTPHandler();
 			
-			threadpool = tpManager.get("info.jehrlich.server.Server");
+			threadpool = tpManager.get(Server.class.getCanonicalName());
 			
 			this.connector = new SocketConnector();
 			connector.setPort(port);

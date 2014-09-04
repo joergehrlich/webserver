@@ -1,4 +1,4 @@
-package server.resource;
+package info.jehrlich.server.resource;
 
 import java.io.FileNotFoundException;
 
@@ -14,6 +14,6 @@ public interface ResourceFactory
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	Resource create(String path) throws Exception;
+	Resource create(String path) throws ResourceException;
 
 }

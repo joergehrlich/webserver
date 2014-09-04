@@ -1,7 +1,8 @@
-package server.resource;
+package info.jehrlich.server.resource;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 
 /**
@@ -38,29 +39,8 @@ public interface Resource {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	InputStream getContent() throws FileNotFoundException;
+	InputStream getContent() throws ResourceNotFoundException;
 
-	/**
-	 * No-Op implementation for unit tests.
-	 */
-	static class NullResource implements Resource {
-
-		public long getContentLength() {
-			return 0;
-		}
-
-		public String getContentType() {
-			return "";
-		}
-
-		public InputStream getContent() throws FileNotFoundException {
-			return null;
-		}
-
-		public Date getLastModified() {
-			return null;
-		}
-
-	}
+	OutputStream getContentWriter() throws ResourceNotFoundException;
 
 }
