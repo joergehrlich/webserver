@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,10 +29,14 @@ public class SocketConnector implements Connector
 	private int port;
 	private String host;
 	private Server server;
-	protected ServerSocket serverSocket;
-	protected final HttpConnectionFactory<DefaultBHttpServerConnection> connFactory;
-	
-	private final int acceptors;
+	private int acceptors;
+	private ServerSocket serverSocket;
+	private HttpConnectionFactory<DefaultBHttpServerConnection> connFactory;
+
+	/**
+	 * Connections that are currently opened.
+	 */
+	private Set<Connection> connections;
 
 	/**
    *
@@ -71,17 +76,15 @@ public class SocketConnector implements Connector
 					// Configure socket properties.
 					configure(socket);
 
-					LOG.info(this + "Begin dispacthing connection from: " + socket.getRemoteSocketAddress().toString());
+					LOG.info("Dispatching connection from: " + socket.getRemoteSocketAddress().toString());
 
 					HttpServerConnection conn = connFactory.createConnection(socket);
 					ConnectionWrapper connWrapper = new ConnectionWrapper(conn, server);
-					connections.add(connWrapper);
+					addConnection(connWrapper);
 					server.dispatch(connWrapper);
-
-					LOG.info(this + "Finised dispacthing connection from: "
-							+ socket.getRemoteSocketAddress().toString());
 				}
-			} catch (Exception e)
+			}
+			catch (Exception e)
 			{
 				LOG.error("Error in Acceptor" + this, e);
 			}
@@ -89,10 +92,16 @@ public class SocketConnector implements Connector
 	}
 
 	/**
-	 * Connections that are currently opened.
+	 * Remove connection from the opened connection set.
+	 * 
+	 * @param conn
 	 */
-	private Set<ConnectionWrapper> connections;
-
+	private synchronized void addConnection(Connection conn)
+	{
+		connections.add(conn);
+	}
+	
+	
 	/**
 	 * Remove connection from the opened connection set.
 	 * 
@@ -108,20 +117,6 @@ public class SocketConnector implements Connector
 	 */
 	public SocketConnector()
 	{
-		this(1);
-	}
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param acceptors
-	 *            Number of acceptor threads.
-	 */
-	public SocketConnector(int acceptors)
-	{
-		this.acceptors = acceptors;
-		connections = new HashSet<ConnectionWrapper>();
-		this.connFactory = DefaultBHttpServerConnectionFactory.INSTANCE;
 	}
 
 	protected void configure(Socket socket) throws IOException
@@ -130,64 +125,15 @@ public class SocketConnector implements Connector
 	}
 
 	/**
-	 * @see com.foo.tpws.Connector#setPort(int)
-	 */
-	public void setPort(int port)
-	{
-		this.port = port;
-	}
-
-	/**
-	 * @see com.foo.tpws.Connector#getPort()
-	 */
-	public int getPort()
-	{
-		return port;
-	}
-
-	/**
-	 * @see com.foo.tpws.Connector#setHost(java.lang.String)
-	 */
-	public void setHost(String host)
-	{
-		this.host = host;
-	}
-
-	/**
-	 * @see com.foo.tpws.Connector#getHost()
-	 */
-	public String getHost()
-	{
-		return host;
-	}
-
-	/**
-	 * @see com.foo.tpws.Connector#setServer(com.foo.tpws.Server)
-	 */
-	public void setServer(Server server)
-	{
-		this.server = server;
-	}
-
-	/**
-	 * @see com.foo.tpws.Connector#getServer()
-	 */
-	public Server getServer()
-	{
-		return server;
-	}
-
-	/**
 	 * @see com.foo.tpws.Connector#start()
 	 */
 	public void start() throws Exception
 	{
 		LOG.info("Starting Server on port " + port);
-		serverSocket = host == null ? new ServerSocket(port, 0)
-				: new ServerSocket(port, 0, InetAddress.getByName(host));
+
 		for (int i = 0; i < acceptors; i++)
 		{
-			this.getServer().dispatch(new Acceptor(i));
+			server.dispatch(new Acceptor(i));
 		}
 	}
 
@@ -204,4 +150,51 @@ public class SocketConnector implements Connector
 			removeConnection(conn);
 		}
 	}
+
+	public static Configurator configurator = new Configurator();
+
+	public static class Configurator
+	{
+		private SocketConnector conn;
+
+		public Configurator()
+		{
+			conn = new SocketConnector();
+		}
+
+		public Configurator withPort(int port)
+		{
+			conn.port = port;
+			return this;
+		}
+
+		public Configurator withHost(String host)
+		{
+			conn.host = host;
+			return this;
+		}
+
+		public Configurator withServer(Server server)
+		{
+			conn.server = server;
+			return this;
+		}
+
+		public Configurator withAcceptors(int num)
+		{
+			conn.acceptors = num;
+			return this;
+		}
+
+		public SocketConnector configure() throws UnknownHostException, IOException
+		{
+			conn.connections = new HashSet<Connection>();
+			conn.connFactory = DefaultBHttpServerConnectionFactory.INSTANCE;
+			conn.serverSocket = conn.host == null ? new ServerSocket(conn.port, 0) : new ServerSocket(conn.port, 0,
+					InetAddress.getByName(conn.host));
+
+			return conn;
+		}
+	}
+
 }

@@ -1,29 +1,19 @@
 package info.jehrlich.server.impl;
 
+import info.jehrlich.server.Connection;
 import info.jehrlich.server.Handler;
 import info.jehrlich.server.resource.Resource;
-import info.jehrlich.server.resource.ResourceAccessException;
-import info.jehrlich.server.resource.ResourceException;
-import info.jehrlich.server.resource.ResourceFactory;
-import info.jehrlich.server.resource.ResourceNotFoundException;
 import info.jehrlich.server.resource.ResourceProvider;
-import info.jehrlich.server.resource.file.FileResourceProvider;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpServerConnection;
-import org.apache.http.HttpStatus;
-import org.apache.http.MethodNotSupportedException;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpProcessor;
@@ -43,11 +33,12 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 	private final Logger LOG = LoggerFactory.getLogger(HTTPHandler.class);
 
 	private HttpService httpService;
-	private ResourceFactory resourceFactory;
-
+	private ResourceProvider provider;
+	private List<HttpRequestHandler> handlerList;
+	
 	// private final HttpServerConnection conn;
 
-	public HTTPHandler()
+	public HTTPHandler(ResourceProvider provider)
 	{
 		// Set up the HTTP protocol processor
 		HttpProcessor httpproc = HttpProcessorBuilder.create().add(new ResponseDate())
@@ -61,85 +52,43 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 		// Set up the HTTP service
 		httpService = new HttpService(httpproc, reqistry);
 
-		ResourceProvider provider = new FileResourceProvider();
-		resourceFactory = provider.getResourceFactory();
-		resourceFactory.initialize("C:\\Users\\jehrlich\\Desktop\\server");
+		this.provider = provider;
+		
+		handlerList = new ArrayList<HttpRequestHandler>();
+		handlerList.add(new HttpContentHandler());
 	}
 
-	public void handle(HttpServerConnection conn)
+	public void handle(Connection conn)
 	{
 		LOG.info(this + "Start handling request.");
 
 		try
 		{
+			HttpServerConnection httpConnection = conn.getBaseConnection();
+			if( httpConnection == null ) throw new Exception();
 			HttpContext context = new BasicHttpContext(null);
-			httpService.handleRequest(conn, context);
+			httpService.handleRequest(httpConnection, context);
 		}
 		catch (Exception ex)
 		{
 			LOG.error("Error handling request");
 		}
-
-		LOG.info(this + "Finished handling connection.");
 	}
 
 	public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException,
 			IOException
 	{
-		String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
-		if (!method.equals("GET"))
-		{
-			throw new MethodNotSupportedException(method + " method not supported");
-		}
-
 		String target = request.getRequestLine().getUri();
-
-		try
+		
+		if( provider != null )
 		{
-			Resource res = resourceFactory.create(URLDecoder.decode(target, "UTF-8"));
-			LOG.info("Serving " + target);
-
-			// set header
-			response.setStatusCode(HttpStatus.SC_OK);
-			response.setHeader("Content-Type", res.getContentType());
-			// response.setHeader("Content-Length", String.valueOf(res.getContentLength()));
-
-			// set body
-			if ("GET".equals(method))
-			{
-				InputStreamEntity body = new InputStreamEntity(res.getContent());
-				response.setEntity(body);
-			}
-			else if ("POST".equals(method))
-			{
-				if (request instanceof HttpEntityEnclosingRequest)
-				{
-					HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-					entity.writeTo(res.getContentWriter());
-				}
-				else
-				{
-					response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
-				}
-			}
+			Resource res = provider.create(URLDecoder.decode(target, "UTF-8"));
+			context.setAttribute("resource", res);
 		}
-		catch (ResourceNotFoundException e)
+		
+		for(HttpRequestHandler handler : handlerList)
 		{
-			response.setStatusCode(HttpStatus.SC_NOT_FOUND);
-			StringEntity entity = new StringEntity("<html><body><h1>File" + target + " not found</h1></body></html>",
-					ContentType.TEXT_HTML);
-			response.setEntity(entity);
-		}
-		catch (ResourceAccessException e)
-		{
-			response.setStatusCode(HttpStatus.SC_FORBIDDEN);
-			StringEntity entity = new StringEntity("<html><body><h1>File" + target
-					+ " Access denied</h1></body></html>", ContentType.TEXT_HTML);
-			response.setEntity(entity);
-		}
-		catch (ResourceException e)
-		{
-			response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			handler.handle(request, response, context);
 		}
 	}
 

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 public class ConnectionWrapper implements Connection, Runnable
 {
-	private final Logger LOG = LoggerFactory.getLogger(ConnectionWrapper.class);
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	private final HttpServerConnection conn;
 	private final Server server;
 
@@ -21,9 +21,7 @@ public class ConnectionWrapper implements Connection, Runnable
 		this.server = server;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see server.Connection#close()
 	 */
 	public void close() throws IOException
@@ -36,33 +34,46 @@ public class ConnectionWrapper implements Connection, Runnable
 	 */
 	public void run()
 	{
-
 		try
 		{
 			LOG.info("Start handling connection.");
 
-			server.handle(conn);
+			server.handle(this);
 
 			LOG.info("Finished handling connection.");
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
-			LOG.error("Error in running connection", e);
-		} finally
+			LOG.error("Error in handling connection", e);
+		}
+		finally
 		{
 			try
 			{
 				// Close connection
 				close();
-			} catch (IOException e)
+			}
+			catch (IOException e)
 			{
-				LOG.error("Error in running connection", e);
+				LOG.error("Error in closing connection", e);
 			}
 		}
 	}
 
+	/**
+	 * @see server.Connection#getBaseConnection()
+	 */
 	public <T> T getBaseConnection()
 	{
-		return null;
+		try
+		{
+			T baseConn = (T) conn;
+			return baseConn;
+		}
+		catch (ClassCastException e)
+		{
+			return null;
+		}
 	}
 
 }
