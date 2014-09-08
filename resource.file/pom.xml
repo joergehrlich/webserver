@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+	<!-- =============================================================================== Parent -->
+
+	<parent>
+		<groupId>info.jehrlich</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../parent/pom.xml</relativePath>
+	</parent>
+
+	<!-- ============================================================================== Project -->
+
+	<artifactId>resource.file</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<name>File system resource provider</name>
+	<description>provides access to resources on the file system</description>
+	  
+	<build>
+		<plugins>
+		</plugins>
+	</build>
+	
+	
+	<dependencies>
+		<dependency>
+			<groupId>info.jehrlich</groupId>
+			<artifactId>resource.api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.rendersnake</groupId>
+		    <artifactId>rendersnake</artifactId>
+		    <version>1.8</version>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
