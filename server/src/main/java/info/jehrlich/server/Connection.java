@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author jehrlich
  * 
  */
-public interface Connection
+public interface Connection extends Runnable
 {
 	/**
 	 * Closes the connection

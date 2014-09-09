@@ -1,6 +1,5 @@
 package info.jehrlich.server.impl;
 
-import info.jehrlich.server.Connection;
 import info.jehrlich.server.Connector;
 import info.jehrlich.server.Server;
 
@@ -29,21 +28,23 @@ public class SocketConnector implements Connector
 	private int port;
 	private String host;
 	private Server server;
-	private int acceptors;
+	private int numAcceptors;
 	private ServerSocket serverSocket;
 	private HttpConnectionFactory<DefaultBHttpServerConnection> connFactory;
 
 	/**
-	 * Connections that are currently opened.
+	 * Acceptors that are currently opened.
 	 */
-	private Set<Connection> connections;
+	private Set<Acceptor> acceptors;
 
 	/**
-   *
-   */
+	 * Will accept incoming connections which are dispatched to the {@link Server}.
+	 * 
+	 */
 	private class Acceptor implements Runnable
 	{
 		private final int index;
+		private volatile boolean running = true;
 
 		/**
 		 * Constructor.
@@ -62,6 +63,12 @@ public class SocketConnector implements Connector
 			return "[Acceptor " + index + "] ";
 		}
 
+		public void close()
+		{
+			LOG.info(this + "Shutting down");
+			running = false;
+		}
+
 		/**
 		 * @see java.lang.Runnable#run()
 		 */
@@ -69,47 +76,32 @@ public class SocketConnector implements Connector
 		{
 			try
 			{
-				while (true)
+				while (running)
 				{
-					LOG.info(this + "Accepting connections");
-					Socket socket = serverSocket.accept();
-					// Configure socket properties.
-					configure(socket);
+					try
+					{
+						LOG.info(this + "Accepting connections");
+						Socket socket = serverSocket.accept();
+						// Configure socket properties.
+						configure(socket);
 
-					LOG.info("Dispatching connection from: " + socket.getRemoteSocketAddress().toString());
+						HttpServerConnection conn = connFactory.createConnection(socket);
+						ConnectionWrapper connWrapper = new ConnectionWrapper(conn, server);
 
-					HttpServerConnection conn = connFactory.createConnection(socket);
-					ConnectionWrapper connWrapper = new ConnectionWrapper(conn, server);
-					addConnection(connWrapper);
-					server.dispatch(connWrapper);
+						LOG.info("Dispatching connection from: " + socket.getRemoteSocketAddress().toString());
+						server.dispatchConnection(connWrapper);
+					}
+					catch (IOException e)
+					{
+						running = false;
+					}
 				}
 			}
 			catch (Exception e)
 			{
-				LOG.error("Error in Acceptor" + this, e);
+				LOG.error("Error in " + this, e);
 			}
 		}
-	}
-
-	/**
-	 * Remove connection from the opened connection set.
-	 * 
-	 * @param conn
-	 */
-	private synchronized void addConnection(Connection conn)
-	{
-		connections.add(conn);
-	}
-	
-	
-	/**
-	 * Remove connection from the opened connection set.
-	 * 
-	 * @param conn
-	 */
-	private synchronized void removeConnection(Connection conn)
-	{
-		connections.remove(conn);
 	}
 
 	/**
@@ -129,11 +121,11 @@ public class SocketConnector implements Connector
 	 */
 	public void start() throws Exception
 	{
-		LOG.info("Starting Server on port " + port);
-
-		for (int i = 0; i < acceptors; i++)
+		for (int i = 0; i < numAcceptors; i++)
 		{
-			server.dispatch(new Acceptor(i));
+			Acceptor acceptor = new Acceptor(i);
+			acceptors.add(acceptor);
+			server.dispatch(acceptor);
 		}
 	}
 
@@ -144,11 +136,16 @@ public class SocketConnector implements Connector
 	 */
 	public void stop() throws Exception
 	{
-		for (Connection conn : connections)
+		// TODO close all acceptors
+		LOG.info("Shutting down acceptors");
+		for (Acceptor acceptor : acceptors)
 		{
-			conn.close();
-			removeConnection(conn);
+			acceptor.close();
+			acceptors.remove(acceptor);
 		}
+
+		LOG.info("Shutting down serversocket");
+		serverSocket.close();
 	}
 
 	public static Configurator configurator = new Configurator();
@@ -182,17 +179,24 @@ public class SocketConnector implements Connector
 
 		public Configurator withAcceptors(int num)
 		{
-			conn.acceptors = num;
+			conn.numAcceptors = num;
 			return this;
 		}
 
 		public SocketConnector configure() throws UnknownHostException, IOException
 		{
-			conn.connections = new HashSet<Connection>();
+			conn.acceptors = new HashSet<SocketConnector.Acceptor>();
 			conn.connFactory = DefaultBHttpServerConnectionFactory.INSTANCE;
-			conn.serverSocket = conn.host == null ? new ServerSocket(conn.port, 0) : new ServerSocket(conn.port, 0,
-					InetAddress.getByName(conn.host));
-
+			
+			if( conn.host == null )
+			{
+				conn.serverSocket = new ServerSocket(conn.port, 0);
+			}
+			else
+			{
+				conn.serverSocket = new ServerSocket(conn.port, 0, InetAddress.getByName(conn.host));
+			}
+			
 			return conn;
 		}
 	}

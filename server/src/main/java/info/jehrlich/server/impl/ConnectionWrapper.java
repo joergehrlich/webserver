@@ -9,7 +9,7 @@ import org.apache.http.HttpServerConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConnectionWrapper implements Connection, Runnable
+public class ConnectionWrapper implements Connection
 {
 	private final Logger LOG = LoggerFactory.getLogger(getClass());
 	private final HttpServerConnection conn;
@@ -26,7 +26,8 @@ public class ConnectionWrapper implements Connection, Runnable
 	 */
 	public void close() throws IOException
 	{
-		conn.close();
+		LOG.info("Shutting down connection");
+		conn.shutdown();
 	}
 
 	/**
