@@ -54,8 +54,8 @@ public class HttpContentHandler implements HttpRequestHandler
 						throw new ResourceAccessException(); 
 					}
 					
-					response.setHeader(HttpHeaders.CONTENT_TYPE, res.getContentType());
-					response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(res.getContentLength()));
+//					response.setHeader(HttpHeaders.CONTENT_TYPE, res.getContentType());
+//					response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(res.getContentLength()));
 					
 					if( "GET".equals(method) )
 					{

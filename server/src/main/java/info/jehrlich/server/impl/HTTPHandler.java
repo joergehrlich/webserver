@@ -30,13 +30,12 @@ import org.slf4j.LoggerFactory;
 
 public class HTTPHandler implements Handler, HttpRequestHandler
 {
-	private final Logger LOG = LoggerFactory.getLogger(HTTPHandler.class);
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	private HttpService httpService;
 	private ResourceProvider provider;
 	private List<HttpRequestHandler> handlerList;
 	
-	// private final HttpServerConnection conn;
 
 	public HTTPHandler(ResourceProvider provider)
 	{
@@ -60,7 +59,7 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 
 	public void handle(Connection conn)
 	{
-		LOG.info(this + "Start handling request.");
+		LOG.info("Start handling request.");
 
 		try
 		{
@@ -69,9 +68,9 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 			HttpContext context = new BasicHttpContext(null);
 			httpService.handleRequest(httpConnection, context);
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			LOG.error("Error handling request");
+			LOG.error("Error handling request", e);
 		}
 	}
 
