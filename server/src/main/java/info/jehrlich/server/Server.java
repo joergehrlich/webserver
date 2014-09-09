@@ -96,9 +96,11 @@ public class Server
 			LOG.info("Shutting down connections");
 			for (Connection conn : connections)
 			{
-				conn.close();
-				removeConnection(conn);
+				LOG.info("Thread " + conn.getId() + ": " + conn.getState());
+				conn.join(); // wait for the connection handling to finish
+//				conn.close(); // initiate closing of the connection
 			}
+			connections.clear();
 
 			if (connector != null)
 			{
@@ -143,6 +145,7 @@ public class Server
 	public void dispatchConnection(Connection conn)
 	{
 		addConnection(conn);
+		LOG.info("Adding Conneciton Thread " + conn.getId() + " for execution");
 		threadpool.execute(conn);
 	}
 
@@ -154,6 +157,7 @@ public class Server
 	 */
 	public void handle(Connection conn)
 	{
+		LOG.info("Handling Conneciton with ThreadID " + conn.getId());
 		handler.handle(conn);
 	}
 

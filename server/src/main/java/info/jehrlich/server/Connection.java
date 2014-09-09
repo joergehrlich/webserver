@@ -1,29 +1,54 @@
 package info.jehrlich.server;
 
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * General connection interface. Must be implemented by any Connection that shall be handled by the
- * server. As each Handler implementation is expecting a specific connection object, it should be
- * wrapped in an object that implements this interface. The wrapped object can then be retrieved by
- * the handler.
- * 
- * @author jehrlich
- * 
- */
-public interface Connection extends Runnable
+public abstract class Connection extends Thread
 {
-	/**
-	 * Closes the connection
-	 * 
-	 * @throws IOException
-	 */
-	public void close() throws IOException;
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
+	
+	private final Server server;
+
+	public Connection(Server server)
+	{
+		this.server = server;
+	}
 
 	/**
-	 * Retrieve the actual specific connection object.
-	 * 
-	 * @return The wrapped connection
+	 * Close this connection. 
+	 * Should block until connection is actually closed
 	 */
-	public <T> T getBaseConnection();
+	public abstract void close() throws Exception;
+	
+	/**
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run()
+	{
+		try
+		{
+			LOG.info("Start handling connection.");
+
+			server.handle(this);
+
+			LOG.info("Finished handling connection.");
+		}
+		catch (Exception e)
+		{
+			LOG.error("Error in handling connection", e);
+		}
+		finally
+		{
+			try
+			{
+				close();
+				server.removeConnection(this);
+			}
+			catch (Exception e)
+			{
+				LOG.error("Error in closing connection", e);
+			}
+		}
+	}
+
 }

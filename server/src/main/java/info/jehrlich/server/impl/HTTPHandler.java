@@ -63,8 +63,7 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 
 		try
 		{
-			HttpServerConnection httpConnection = conn.getBaseConnection();
-			if( httpConnection == null ) throw new Exception();
+			HttpServerConnection httpConnection = ((ConnectionWrapper)conn).getHttpConnection();
 			HttpContext context = new BasicHttpContext(null);
 			httpService.handleRequest(httpConnection, context);
 		}
