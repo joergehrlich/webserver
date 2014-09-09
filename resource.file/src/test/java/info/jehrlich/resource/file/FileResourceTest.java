@@ -13,6 +13,13 @@ import org.junit.Test;
 public class FileResourceTest extends AbstractResourceTest<FileResource>
 {
 
+	@Override
+	protected FileResource instantiateResource(File file)
+	{
+		return new FileResource(file);
+	}
+
+	
 	@Test
 	public void getContentLength_existingFile_realLength()
 	{
@@ -59,10 +66,5 @@ public class FileResourceTest extends AbstractResourceTest<FileResource>
 		htmlFile.getContent();
 	}
 	
-	@Override
-	protected FileResource instantiateResource(File file)
-	{
-		return new FileResource(file);
-	}
 
 }

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class FileResourceProvider implements ResourceProvider
 {
 	@Property(value = "C:\\Users\\jehrlich\\Desktop\\server")
-	static final String ROOTPATH = "rootPath";
+	private static final String ROOTPATH = "rootPath";
 
 	private File rootDir;
 
@@ -36,15 +36,9 @@ public class FileResourceProvider implements ResourceProvider
 	public FileResourceProvider()
 	{
 	}
-
-	// TODO for testing purposes only
-	public FileResourceProvider(File path)
-	{
-		rootDir = path;
-	}
 	
 	@Activate
-	protected void activate(Map<String, String> config)
+	public void activate(Map<String, String> config)
 	{
 		// TODO what if null?
 		String rootPath = config.get(ROOTPATH);
@@ -74,7 +68,7 @@ public class FileResourceProvider implements ResourceProvider
 	@Modified
 	private void modified(Map<String, String> config)
 	{
-		LOG.info("Updating ResourceProvider with new root path");
+		LOG.info("Updating ResourceProvider with new config");
 
 		deactivate();
 		activate(config);

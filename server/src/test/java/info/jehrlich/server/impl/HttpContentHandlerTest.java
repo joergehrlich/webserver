@@ -2,6 +2,11 @@ package info.jehrlich.server.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import info.jehrlich.resource.file.SampleFiles;
 import info.jehrlich.server.resource.ResourceProvider;
 import info.jehrlich.server.resource.file.FileResourceProvider;
 
@@ -72,8 +77,12 @@ public class HttpContentHandlerTest
 
 	private HttpResponse send(String method, String target) throws Exception
 	{
-
-		ResourceProvider provider = new FileResourceProvider(SampleFiles.DIR);
+		Map<String, String> config = new HashMap<String, String>();
+		config.put("rootPath", SampleFiles.DIR.getAbsolutePath());
+		
+		FileResourceProvider provider = new FileResourceProvider();
+		provider.activate(config);
+		
 		HTTPHandler handler = new HTTPHandler(provider);
 
 		HttpRequest request = new BasicHttpRequest(new BasicRequestLine(method, target, HttpVersion.HTTP_1_1));

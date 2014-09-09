@@ -15,6 +15,11 @@ import org.junit.Test;
 
 public class DirectoryResourceTest extends AbstractResourceTest<DirectoryResource>
 {
+	@Override
+	protected DirectoryResource instantiateResource(File file)
+	{
+		return new DirectoryResource(SampleFiles.DIR, file);
+	}
 	
 	@Test
 	public void getContentType_sampleDirectory_html()
@@ -41,12 +46,4 @@ public class DirectoryResourceTest extends AbstractResourceTest<DirectoryResourc
 		// correct links
 		assertThat(readAsString(folder.getContent()), stringContainsInOrder(asList("href=\"/index.html\"", "href=\"/plain.jpg\"")));
 	}
-
-
-	@Override
-	protected DirectoryResource instantiateResource(File file)
-	{
-		return new DirectoryResource(SampleFiles.DIR, file);
-	}
-
 }
