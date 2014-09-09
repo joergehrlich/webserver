@@ -33,12 +33,17 @@ public class Server
 {
 	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
+	// --- Config properties ---
 	@Property(value = "8080")
-	static final String PORT = "port";
+	private static final String PORT = "port";
 
 	@Property(value = "")
-	static final String HOST = "host";
+	private static final String HOST = "host";
+	
+	@Property(value = "3")
+	private static final String NUM_ACCEPTORS = "numAcceptors"; 
 
+	// --- Service references ---
 	// The server cannot run without ThreadPool manager
 	@Reference(policy = ReferencePolicy.STATIC)
 	private ThreadPoolManager tpManager;
@@ -47,9 +52,14 @@ public class Server
 	@Reference(policy = ReferencePolicy.DYNAMIC)
 	private volatile ResourceProvider resourceProvider;
 
+	// --- server variables ---
+	// Will listen for incoming connections
 	private Connector connector;
+	// Will handle connections
 	private Handler handler;
+	// Manages server threads
 	private ThreadPool threadpool;
+	// List of open connections
 	private Set<Connection> connections;
 
 	// --- Lifecycle methods ---
@@ -59,10 +69,17 @@ public class Server
 	{
 		try
 		{
+			// Get configuration values
 			String portConfig = config.get(PORT);
 			int port = portConfig != null ? Integer.parseInt(portConfig) : 0;
-			String host = config.get(HOST);
-
+			
+			String host = config.get(HOST); // can be null
+			
+			String acceptorConfig = config.get(NUM_ACCEPTORS);
+			int numAcceptors = acceptorConfig != null ? Integer.parseInt(acceptorConfig) : 3;
+			
+			// set up the server
+			
 			connections = new HashSet<Connection>();
 
 			// resourceProvider could be null if no provider has been activated in the system
@@ -70,8 +87,12 @@ public class Server
 
 			threadpool = tpManager.get(Server.class.getCanonicalName());
 
-			connector = SocketConnector.configurator.withPort(port).withHost(host).withServer(this).withAcceptors(1)
-					.configure();
+			connector = SocketConnector.configurator
+										.withPort(port)
+										.withHost(host)
+										.withServer(this)
+										.withAcceptors(numAcceptors)
+										.configure();
 
 			LOG.info("Starting Server on port " + port);
 			connector.start();
@@ -157,7 +178,7 @@ public class Server
 	}
 
 	/**
-	 * Remove connection from the opened connection set.
+	 * Add connection to the opened connection set.
 	 * 
 	 * @param conn
 	 */

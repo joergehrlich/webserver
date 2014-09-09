@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 @Component(metatype = true)
 public class FileResourceProvider implements ResourceProvider
 {
-	@Property(value = "C:\\Users\\jehrlich\\Desktop\\server")
+	// Per default it is looking at a "www" directory in the execution working directory
+	@Property(value = "www")
 	private static final String ROOTPATH = "rootPath";
 
 	private File rootDir;
@@ -40,16 +41,14 @@ public class FileResourceProvider implements ResourceProvider
 	@Activate
 	public void activate(Map<String, String> config)
 	{
-		// TODO what if null?
 		String rootPath = config.get(ROOTPATH);
 
 		rootDir = new File(rootPath);
-
+		LOG.info("Init with path: " + rootDir.getAbsolutePath());
+		
 		if (!rootDir.isDirectory() || !rootDir.exists() || !rootDir.canRead())
 		{
 			LOG.error(rootDir.getPath() + " does not exist or is not readable.");
-			// TODO what exception to throw?
-			throw new IllegalArgumentException(rootDir.getPath() + " does not exist or is not readable.");
 		}
 	}
 
@@ -68,7 +67,7 @@ public class FileResourceProvider implements ResourceProvider
 	@Modified
 	private void modified(Map<String, String> config)
 	{
-		LOG.info("Updating ResourceProvider with new config");
+		LOG.info("Updating with new config");
 
 		deactivate();
 		activate(config);
