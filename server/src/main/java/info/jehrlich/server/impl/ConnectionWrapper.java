@@ -30,7 +30,7 @@ public class ConnectionWrapper extends Connection
 	public void close() throws Exception
 	{
 		LOG.info("Shutting down connection");
-		conn.close();
+		conn.shutdown(); //immediately shut down the connection
 	}
 
 	/**
