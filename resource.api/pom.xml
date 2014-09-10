@@ -15,7 +15,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>Resource Provider API</name>
+	<name>Webserver :: Resource Provider API</name>
 	<description>provides access to resources</description>
 	
 	<build>

@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-                      ADOBE CONFIDENTIAL
-                      _ _ _ _ _ _ _ _ _ _
-
-  Copyright 2013, Adobe Systems Incorporated
-  All Rights Reserved.
-
-  NOTICE:  All information contained herein is, and remains
-  the property of Adobe Systems Incorporated and its suppliers,
-  if any.  The intellectual and technical concepts contained
-  herein are proprietary to Adobe Systems Incorporated and its
-  suppliers and are protected by all applicable intellectual property
-  laws, including trade secret and or copyright laws.
-  Dissemination of this information or reproduction of this material
-  is strictly forbidden unless prior written permission is obtained
-  from Adobe Systems Incorporated.
-
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -36,11 +17,6 @@
 	
 	<!-- Dependencies ============================================================================ -->
 	<dependencies>
-		
-		<!-- ========================================================== -->
-		<!-- OSGI Bundles for the OSGI Runtime,                         -->
-		<!-- ========================================================== -->
-
 		
 		<!-- Felix + Submodules -->
 		<dependency>
@@ -66,10 +42,6 @@
 		<dependency>
 		    <groupId>org.apache.felix</groupId>
 		    <artifactId>org.apache.felix.fileinstall</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.log</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -102,6 +74,18 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+		    <groupId>org.apache.sling</groupId>
+		    <artifactId>org.apache.sling.commons.threads</artifactId>
+		    <version>3.2.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpcore-osgi</artifactId>
+		    <version>4.3.2</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
 			<artifactId>jetty-all-server</artifactId>
 			<version>8.1.14.v20131031</version>
@@ -111,6 +95,12 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -124,13 +114,6 @@
 		    <version>1.8</version>
 		</dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>1.4</version>
-            <scope>provided</scope>
-        </dependency>
-		
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi.util</artifactId>
@@ -148,19 +131,6 @@
 			<artifactId>org.eclipse.osgi.services</artifactId>
 			<version>3.3.100.v20130513-1956</version>
 			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.apache.sling</groupId>
-		    <artifactId>org.apache.sling.commons.threads</artifactId>
-		    <version>3.2.0</version>
-		    <scope>provided</scope>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpcore-osgi</artifactId>
-		    <version>4.3.2</version>
-		    <scope>provided</scope>
 		</dependency>
        		
 		<dependency>

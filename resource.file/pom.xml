@@ -15,7 +15,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>File system resource provider</name>
+	<name>Webserver :: File system resource provider</name>
 	<description>provides access to resources on the file system</description>
 	  
 	<build>
@@ -36,12 +36,6 @@
 		    <artifactId>rendersnake</artifactId>
 		    <version>1.8</version>
 		    <scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

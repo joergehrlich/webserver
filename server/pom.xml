@@ -12,10 +12,11 @@
 	<!-- ============================================================================== Project -->
 
 	<artifactId>server</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>Der Ehrliche Webserver</name>
-	<description>Serviert Web</description>
+	<name>Webserver :: The Server</name>
+	<description>serves some web</description>
 	
 	<build>
 		<plugins>
@@ -31,12 +32,11 @@
 		            </goals>
 		          </execution>
 		        </executions>
-	      </plugin>
-			<!-- <plugin>
+	      	</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>1.9</version>
-			</plugin>-->
+			</plugin>
 		</plugins>
 	</build>
 	
@@ -47,7 +47,6 @@
 			<artifactId>resource.api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
 		<dependency>
 		    <groupId>org.apache.sling</groupId>
 		    <artifactId>org.apache.sling.commons.threads</artifactId>
@@ -59,11 +58,7 @@
 		    <version>4.3.2</version>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>

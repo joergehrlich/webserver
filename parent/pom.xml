@@ -1,33 +1,13 @@
-<!--
-
-                      ADOBE CONFIDENTIAL
-                      _ _ _ _ _ _ _ _ _ _
-
-  Copyright 2013, Adobe Systems Incorporated
-  All Rights Reserved.
-
-  NOTICE:  All information contained herein is, and remains
-  the property of Adobe Systems Incorporated and its suppliers,
-  if any.  The intellectual and technical concepts contained
-  herein are proprietary to Adobe Systems Incorporated and its
-  suppliers and are protected by all applicable intellectual property
-  laws, including trade secret and or copyright laws.
-  Dissemination of this information or reproduction of this material
-  is strictly forbidden unless prior written permission is obtained
-  from Adobe Systems Incorporated.
-
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	<name>webserver parent</name>
 
 	<groupId>info.jehrlich</groupId>
 	<artifactId>parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<name>Webserver :: parent</name>
 	
 	<!-- ================================================================    Dependency Management -->
 	<properties>
@@ -39,7 +19,8 @@
 		<felix.metatype.version>1.0.6</felix.metatype.version>
 		<felix.log.version>1.0.1</felix.log.version>
 		<org.slf4j.version>1.7.7</org.slf4j.version>
-		
+		<maven.javadoc.version>2.9.1</maven.javadoc.version>
+
 		<junit.version>4.11</junit.version>
 		<pax.exam.version>4.1.0</pax.exam.version>
 		<hamcrest.version>1.3</hamcrest.version>
@@ -81,11 +62,6 @@
 				<version>${felix.metatype.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.log</artifactId>
-				<version>${felix.log.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${org.slf4j.version}</version>
@@ -93,20 +69,10 @@
 			<dependency>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>${maven.javadoc.version}</version>
 			</dependency>
-			<!-- <dependency>
-	            <groupId>ch.qos.logback</groupId>
-	            <artifactId>logback-core</artifactId>
-	            <version>${logback.version}</version>
-	        </dependency>
-	 
-	        <dependency>
-	            <groupId>ch.qos.logback</groupId>
-	            <artifactId>logback-classic</artifactId>
-	            <version>${logback.version}</version>
-	        </dependency>-->
-			 <!-- Test dependencies -->
+
+			<!-- Test Dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -171,19 +137,16 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 			</dependency>
-			<!-- <dependency>
-	            <groupId>ch.qos.logback</groupId>
-	            <artifactId>logback-core</artifactId>
-	        </dependency>
-	        <dependency>
-	            <groupId>ch.qos.logback</groupId>
-	            <artifactId>logback-classic</artifactId>
-	        </dependency>-->
 	        
-			 <!-- Test dependencies -->
+			 <!-- Test Dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-all</artifactId>
 				<scope>test</scope>
 			</dependency>
 	        <dependency>
