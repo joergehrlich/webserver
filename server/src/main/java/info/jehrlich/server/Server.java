@@ -14,6 +14,7 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.sling.commons.threads.ThreadPool;
 import org.apache.sling.commons.threads.ThreadPoolManager;
@@ -49,7 +50,7 @@ public class Server
 	private ThreadPoolManager tpManager;
 
 	// But it could still handle requests, even if no resources can be served
-	@Reference(policy = ReferencePolicy.DYNAMIC)
+	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL_UNARY)
 	private volatile ResourceProvider resourceProvider;
 
 	// --- server variables ---

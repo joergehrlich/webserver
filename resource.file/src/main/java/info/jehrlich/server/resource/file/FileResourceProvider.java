@@ -2,6 +2,8 @@ package info.jehrlich.server.resource.file;
 
 import info.jehrlich.server.resource.Resource;
 import info.jehrlich.server.resource.ResourceProvider;
+import info.jehrlich.server.resource.file.internal.DirectoryResource;
+import info.jehrlich.server.resource.file.internal.FileResource;
 import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.File;
@@ -13,6 +15,7 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.mime.MimeTypeService;
@@ -36,7 +39,7 @@ public class FileResourceProvider implements ResourceProvider
 	private static final String ROOTPATH = "rootPath";
 
 	// Service references
-	@Reference(policy = ReferencePolicy.DYNAMIC)
+	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL_UNARY)
 	private volatile MimeTypeService mimeTypeService;
 	
 	private File rootDir;

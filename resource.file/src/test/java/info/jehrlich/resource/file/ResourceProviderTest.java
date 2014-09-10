@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import info.jehrlich.server.resource.Resource;
-import info.jehrlich.server.resource.file.DirectoryResource;
-import info.jehrlich.server.resource.file.FileResource;
 import info.jehrlich.server.resource.file.FileResourceProvider;
+import info.jehrlich.server.resource.file.internal.DirectoryResource;
+import info.jehrlich.server.resource.file.internal.FileResource;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

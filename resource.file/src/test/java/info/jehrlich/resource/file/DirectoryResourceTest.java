@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.Assert.assertThat;
-import info.jehrlich.server.resource.file.DirectoryResource;
+import info.jehrlich.server.resource.file.internal.DirectoryResource;
 import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.File;

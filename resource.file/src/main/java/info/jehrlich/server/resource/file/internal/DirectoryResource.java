@@ -1,9 +1,8 @@
-package info.jehrlich.server.resource.file;
+package info.jehrlich.server.resource.file.internal;
 
 import static org.rendersnake.HtmlAttributesFactory.href;
 import info.jehrlich.server.resource.Resource;
 import info.jehrlich.server.resource.ResourceAccessException;
-import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
