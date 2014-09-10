@@ -21,10 +21,12 @@ public class FileResource implements Resource
 {
 
 	private File file;
-
-	public FileResource(File file)
+	private MimeType mimeService;
+	
+	public FileResource(File file, MimeType mimeService)
 	{
 		this.file = file;
+		this.mimeService = mimeService;
 	}
 
 	public long getContentLength()
@@ -34,7 +36,7 @@ public class FileResource implements Resource
 
 	public String getContentType()
 	{
-		return MimeType.of(file);
+		return mimeService.getMimeType(file.getName());
 	}
 
 	public InputStream getContent() throws ResourceNotFoundException

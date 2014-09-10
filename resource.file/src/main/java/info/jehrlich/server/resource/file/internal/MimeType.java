@@ -1,16 +1,18 @@
 package info.jehrlich.server.resource.file.internal;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sling.commons.mime.MimeTypeService;
+
 /**
- * Utility class for mime-type detection. Implements a simple file extension based approach.
+ * Utility class for mime-type detection. It uses Sling {@link MimeTypeService} if available or
+ * falls back to a simple file extension based approach that only knows a few mime-types
  * 
  */
 public class MimeType
 {
-
+	// Fallback list of known mimetypes
 	public static Map<String, String> mimeTypes = new HashMap<String, String>();
 
 	static
@@ -19,30 +21,54 @@ public class MimeType
 		mimeTypes.put(".html", "text/html");
 		mimeTypes.put(".txt", "text/plain");
 		mimeTypes.put(".jpg", "image/jpeg");
-		mimeTypes.put(".jpeg", "image/jpeg");
 	}
 
-	public static String of(File file)
+	// Handle to the Sling MimeTypeService
+	private MimeTypeService mimeService;
+
+	public MimeType(MimeTypeService mimeService)
 	{
-		return of(getFileExtension(file));
+		this.mimeService = mimeService;
 	}
 
-	public static String of(String extension)
+	/**
+	 * Taken from {@link MimeTypeService} javadoc: Returns the MIME type of the extension of the
+	 * given name. The extension is the part of the name after the last dot. If the name does not
+	 * contain a dot, the name as a whole is assumed to be the extension.
+	 * 
+	 * @param fileName
+	 * @return the mime-type
+	 */
+	public String getMimeType(String fileName)
 	{
+		String mimetype;
 
-		extension = extension.toLowerCase();
+		if (mimeService != null)
+		{
+			mimetype = mimeService.getMimeType(fileName);
+		}
+		else
+		{
+			String extension = getFileExtension(fileName);
+			extension = extension.toLowerCase();
 
-		if (!mimeTypes.containsKey(extension))
-			return mimeTypes.get("");
+			if (!mimeTypes.containsKey(extension))
+			{
+				mimetype = mimeTypes.get("");
+			}
+			else
+			{
+				mimetype = mimeTypes.get(extension);
+			}
+		}
 
-		return mimeTypes.get(extension);
+		return mimetype;
 	}
 
-	private static String getFileExtension(File file)
+	private String getFileExtension(String fileName)
 	{
-		String filename = file.getName();
-		int pos = filename.lastIndexOf(".");
-		return pos >= 0 ? filename.substring(pos) : "";
+		int pos = fileName.lastIndexOf(".");
+		return pos >= 0 ? fileName.substring(pos) : "";
 	}
 
 }

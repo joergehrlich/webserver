@@ -32,6 +32,7 @@ public class DirectoryResource implements Resource
 	private File documentRoot;
 	private File folder;
 	private HtmlCanvas listing;
+	private MimeType mimeService;
 	
 	/**
 	 * Constructor.
@@ -41,10 +42,11 @@ public class DirectoryResource implements Resource
 	 * @param folder
 	 *            the requested folder represented by this resource.
 	 */
-	public DirectoryResource(File documentRoot, File folder)
+	public DirectoryResource(File documentRoot, File folder, MimeType mimeService)
 	{
 		this.documentRoot = documentRoot;
 		this.folder = folder;
+		this.mimeService = mimeService;
 	}
 
 	// ~ public methods ===================================================================/
@@ -56,7 +58,7 @@ public class DirectoryResource implements Resource
 
 	public String getContentType()
 	{
-		return MimeType.of(".html");
+		return mimeService.getMimeType(".html");
 	}
 
 	public InputStream getContent()

@@ -2,6 +2,7 @@ package info.jehrlich.server.resource.file;
 
 import info.jehrlich.server.resource.Resource;
 import info.jehrlich.server.resource.ResourceProvider;
+import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.File;
 import java.util.Map;
@@ -11,13 +12,17 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.mime.MimeTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of a {@link ResourceProvider} that provides access to resources on file system.
  * Needs to be configured with the root path of the resources.
+ * If available it will use the Sling {@link MimeTypeService} to determine Mimetypes.
  * 
  * @author jehrlich
  * 
@@ -30,8 +35,13 @@ public class FileResourceProvider implements ResourceProvider
 	@Property(value = "www")
 	private static final String ROOTPATH = "rootPath";
 
+	// Service references
+	@Reference(policy = ReferencePolicy.DYNAMIC)
+	private volatile MimeTypeService mimeTypeService;
+	
 	private File rootDir;
-
+	private MimeType mimeService;
+	
 	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	public FileResourceProvider()
@@ -43,6 +53,8 @@ public class FileResourceProvider implements ResourceProvider
 	{
 		String rootPath = config.get(ROOTPATH);
 
+		mimeService = new MimeType(mimeTypeService);
+		
 		rootDir = new File(rootPath);
 		LOG.info("Init with path: " + rootDir.getAbsolutePath());
 		
@@ -80,6 +92,6 @@ public class FileResourceProvider implements ResourceProvider
 	{
 		File file = new File(rootDir, path);
 
-		return file.isDirectory() ? new DirectoryResource(rootDir, file) : new FileResource(file);
+		return file.isDirectory() ? new DirectoryResource(rootDir, file, mimeService) : new FileResource(file, mimeService);
 	}
 }

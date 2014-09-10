@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import info.jehrlich.server.resource.ResourceNotFoundException;
 import info.jehrlich.server.resource.file.FileResource;
+import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.File;
 
@@ -16,7 +17,7 @@ public class FileResourceTest extends AbstractResourceTest<FileResource>
 	@Override
 	protected FileResource instantiateResource(File file)
 	{
-		return new FileResource(file);
+		return new FileResource(file, new MimeType(null));
 	}
 
 	

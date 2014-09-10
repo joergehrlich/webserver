@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.Assert.assertThat;
 import info.jehrlich.server.resource.file.DirectoryResource;
+import info.jehrlich.server.resource.file.internal.MimeType;
 
 import java.io.File;
 import java.io.InputStream;
@@ -18,7 +19,7 @@ public class DirectoryResourceTest extends AbstractResourceTest<DirectoryResourc
 	@Override
 	protected DirectoryResource instantiateResource(File file)
 	{
-		return new DirectoryResource(SampleFiles.DIR, file);
+		return new DirectoryResource(SampleFiles.DIR, file, new MimeType(null));
 	}
 	
 	@Test
