@@ -24,7 +24,7 @@ public class ConnectionWrapper extends Connection
 	}
 
 	/**
-	 * @see server.Connection#close()
+	 * @see Connection#close()
 	 */
 	@Override
 	public void close() throws Exception
@@ -34,7 +34,8 @@ public class ConnectionWrapper extends Connection
 	}
 
 	/**
-	 * @see server.Connection#getBaseConnection()
+	 * Return the actual HttpCore Connection
+	 * @return
 	 */
 	public HttpServerConnection getHttpConnection()
 	{

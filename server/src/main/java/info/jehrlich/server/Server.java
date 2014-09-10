@@ -65,7 +65,7 @@ public class Server
 	// --- Lifecycle methods ---
 
 	@Activate
-	protected void activate(Map<String, String> config)
+	private void activate(Map<String, String> config)
 	{
 		try
 		{
@@ -108,7 +108,7 @@ public class Server
 	}
 
 	@Deactivate
-	protected void deactivate()
+	private void deactivate()
 	{
 		LOG.info("Shutting down server");
 
@@ -156,7 +156,7 @@ public class Server
 	}
 
 	/**
-	 * Executes the given Connection in the ThreadPool.
+	 * Executes the given {@link Connection} in the ThreadPool.
 	 * 
 	 * @param job
 	 */
@@ -167,7 +167,7 @@ public class Server
 	}
 
 	/**
-	 * Starts handling of incoming connection.
+	 * Starts handling of incoming {@link Connection}.
 	 * 
 	 * @param conn
 	 *            The connection to handle
@@ -178,7 +178,7 @@ public class Server
 	}
 
 	/**
-	 * Add connection to the opened connection set.
+	 * Add {@link Connection} to the opened connection set.
 	 * 
 	 * @param conn
 	 */
@@ -188,7 +188,7 @@ public class Server
 	}
 
 	/**
-	 * Remove connection from the opened connection set.
+	 * Remove {@link Connection} from the opened connection set.
 	 * 
 	 * @param conn
 	 */

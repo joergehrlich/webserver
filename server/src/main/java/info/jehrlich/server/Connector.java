@@ -7,7 +7,7 @@ public interface Connector
 {
 
 	/**
-	 * Start connector.
+	 * Start Connector.
 	 * Starts the Acceptor threads that will listen for incoming connections
 	 * 
 	 * @throws Exception
@@ -15,7 +15,7 @@ public interface Connector
 	public void start() throws Exception;
 
 	/**
-	 * Stop connector.
+	 * Stop Connector.
 	 * Will stop all listening acceptors
 	 * 
 	 * @throws Exception

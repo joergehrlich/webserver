@@ -1,13 +1,13 @@
 package info.jehrlich.server.impl;
 
 import info.jehrlich.server.Connector;
+import info.jehrlich.server.ConnectorConfigurator;
 import info.jehrlich.server.Server;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Socket Connector implementation.
+ * Connector implementation.
  */
 public class SocketConnector implements Connector
 {
@@ -37,6 +37,112 @@ public class SocketConnector implements Connector
 	 */
 	private Set<Acceptor> acceptors;
 
+	/**
+	 * Constructor hidden, Instances should be created with the configurator 
+	 */
+	private SocketConnector()
+	{
+	}
+
+	/**
+	 * @see Connector#start()
+	 */
+	public void start() throws Exception
+	{
+		for (int i = 0; i < numAcceptors; i++)
+		{
+			Acceptor acceptor = new Acceptor(i);
+			acceptors.add(acceptor);
+			server.dispatch(acceptor);
+		}
+	}
+
+	/**
+	 * @see Connector#stop()
+	 */
+	public void stop() throws Exception
+	{
+		LOG.info("Shutting down acceptors");
+		for (Acceptor acceptor : acceptors)
+		{
+			acceptor.close();
+		}
+		acceptors.clear();
+
+		LOG.info("Shutting down serversocket");
+		serverSocket.close();
+	}
+
+	// The configurator to create instances of this Connector
+	public static ConnectorConfigurator configurator = new SocketConnectorConfigurator();
+
+	public static class SocketConnectorConfigurator implements ConnectorConfigurator
+	{
+		private SocketConnector conn;
+
+		public SocketConnectorConfigurator()
+		{
+			conn = new SocketConnector();
+		}
+
+		/* (non-Javadoc)
+		 * @see info.jehrlich.server.impl.ConnectorConfigurator#withPort(int)
+		 */
+		public ConnectorConfigurator withPort(int port)
+		{
+			conn.port = port;
+			return this;
+		}
+
+		/* (non-Javadoc)
+		 * @see info.jehrlich.server.impl.ConnectorConfigurator#withHost(java.lang.String)
+		 */
+		public ConnectorConfigurator withHost(String host)
+		{
+			conn.host = host;
+			return this;
+		}
+
+		/* (non-Javadoc)
+		 * @see info.jehrlich.server.impl.ConnectorConfigurator#withServer(info.jehrlich.server.Server)
+		 */
+		public ConnectorConfigurator withServer(Server server)
+		{
+			conn.server = server;
+			return this;
+		}
+
+		/* (non-Javadoc)
+		 * @see info.jehrlich.server.impl.ConnectorConfigurator#withAcceptors(int)
+		 */
+		public ConnectorConfigurator withAcceptors(int num)
+		{
+			conn.numAcceptors = num;
+			return this;
+		}
+
+		/* (non-Javadoc)
+		 * @see info.jehrlich.server.impl.ConnectorConfigurator#configure()
+		 */
+		public Connector configure() throws Exception
+		{
+			conn.acceptors = new HashSet<SocketConnector.Acceptor>();
+			conn.connFactory = DefaultBHttpServerConnectionFactory.INSTANCE;
+			
+			if( conn.host == null )
+			{
+				conn.serverSocket = new ServerSocket(conn.port, 0);
+			}
+			else
+			{
+				conn.serverSocket = new ServerSocket(conn.port, 0, InetAddress.getByName(conn.host));
+			}
+			
+			return conn;
+		}
+	}
+	
+	// --- Inner Acceptor Class ---
 	/**
 	 * Will accept incoming connections which are dispatched to the {@link Server}.
 	 * 
@@ -82,8 +188,6 @@ public class SocketConnector implements Connector
 					{
 						LOG.info(this + "Accepting connections");
 						Socket socket = serverSocket.accept();
-						// Configure socket properties.
-						configure(socket);
 
 						HttpServerConnection conn = connFactory.createConnection(socket);
 						ConnectionWrapper connWrapper = new ConnectionWrapper(conn, server);
@@ -103,100 +207,4 @@ public class SocketConnector implements Connector
 			}
 		}
 	}
-
-	/**
-	 * Default constructor. Connector with a single acceptor thread.
-	 */
-	public SocketConnector()
-	{
-	}
-
-	protected void configure(Socket socket) throws IOException
-	{
-
-	}
-
-	/**
-	 * @see Connector#start()
-	 */
-	public void start() throws Exception
-	{
-		for (int i = 0; i < numAcceptors; i++)
-		{
-			Acceptor acceptor = new Acceptor(i);
-			acceptors.add(acceptor);
-			server.dispatch(acceptor);
-		}
-	}
-
-	/**
-	 * @see Connector#stop()
-	 */
-	public void stop() throws Exception
-	{
-		LOG.info("Shutting down acceptors");
-		for (Acceptor acceptor : acceptors)
-		{
-			acceptor.close();
-		}
-		acceptors.clear();
-
-		LOG.info("Shutting down serversocket");
-		serverSocket.close();
-	}
-
-	public static Configurator configurator = new Configurator();
-
-	// TODO extract interface
-	public static class Configurator
-	{
-		private SocketConnector conn;
-
-		public Configurator()
-		{
-			conn = new SocketConnector();
-		}
-
-		public Configurator withPort(int port)
-		{
-			conn.port = port;
-			return this;
-		}
-
-		public Configurator withHost(String host)
-		{
-			conn.host = host;
-			return this;
-		}
-
-		public Configurator withServer(Server server)
-		{
-			conn.server = server;
-			return this;
-		}
-
-		public Configurator withAcceptors(int num)
-		{
-			conn.numAcceptors = num;
-			return this;
-		}
-
-		public SocketConnector configure() throws UnknownHostException, IOException
-		{
-			conn.acceptors = new HashSet<SocketConnector.Acceptor>();
-			conn.connFactory = DefaultBHttpServerConnectionFactory.INSTANCE;
-			
-			if( conn.host == null )
-			{
-				conn.serverSocket = new ServerSocket(conn.port, 0);
-			}
-			else
-			{
-				conn.serverSocket = new ServerSocket(conn.port, 0, InetAddress.getByName(conn.host));
-			}
-			
-			return conn;
-		}
-	}
-
 }
