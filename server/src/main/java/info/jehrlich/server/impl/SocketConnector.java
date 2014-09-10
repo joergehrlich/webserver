@@ -117,7 +117,7 @@ public class SocketConnector implements Connector
 	}
 
 	/**
-	 * @see com.foo.tpws.Connector#start()
+	 * @see Connector#start()
 	 */
 	public void start() throws Exception
 	{
@@ -130,19 +130,16 @@ public class SocketConnector implements Connector
 	}
 
 	/**
-	 * Close all opened connections.
-	 * 
-	 * @see com.foo.tpws.Connector#stop()
+	 * @see Connector#stop()
 	 */
 	public void stop() throws Exception
 	{
-		// TODO close all acceptors
 		LOG.info("Shutting down acceptors");
 		for (Acceptor acceptor : acceptors)
 		{
 			acceptor.close();
-			acceptors.remove(acceptor);
 		}
+		acceptors.clear();
 
 		LOG.info("Shutting down serversocket");
 		serverSocket.close();
@@ -150,6 +147,7 @@ public class SocketConnector implements Connector
 
 	public static Configurator configurator = new Configurator();
 
+	// TODO extract interface
 	public static class Configurator
 	{
 		private SocketConnector conn;

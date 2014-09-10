@@ -8,6 +8,7 @@ public interface Connector
 
 	/**
 	 * Start connector.
+	 * Starts the Acceptor threads that will listen for incoming connections
 	 * 
 	 * @throws Exception
 	 */
@@ -15,6 +16,7 @@ public interface Connector
 
 	/**
 	 * Stop connector.
+	 * Will stop all listening acceptors
 	 * 
 	 * @throws Exception
 	 */

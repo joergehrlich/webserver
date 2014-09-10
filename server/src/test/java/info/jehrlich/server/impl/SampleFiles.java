@@ -13,7 +13,7 @@ public class SampleFiles
 	{
 		try
 		{
-			URL resource = SampleFiles.class.getClassLoader().getResource("sample");
+			URL resource = SampleFiles.class.getClassLoader().getResource("www");
 			String filePath = URLDecoder.decode(resource.getFile(), "UTF-8");
 			DIR = new File(filePath);
 		}
