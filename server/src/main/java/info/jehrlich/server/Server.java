@@ -49,7 +49,7 @@ public class Server
 	@Reference(policy = ReferencePolicy.STATIC)
 	private ThreadPoolManager tpManager;
 
-	// But it could still handle requests, even if no resources can be served
+	// But it could still handle requests, even if no resources are registered
 	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL_UNARY)
 	private volatile ResourceProvider resourceProvider;
 

@@ -14,6 +14,7 @@
 		<felix.framework.version>4.4.1</felix.framework.version>
 		<felix.scr.annotations.version>1.9.8</felix.scr.annotations.version>
 		<felix.configadmin.version>1.8.0</felix.configadmin.version>
+		<felix.eventadmin.version>1.4.0</felix.eventadmin.version>
 		<felix.fileinstall.version>3.4.0</felix.fileinstall.version>
 		<felix.scr.version>1.8.2</felix.scr.version>
 		<felix.metatype.version>1.0.6</felix.metatype.version>
@@ -40,6 +41,11 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.configadmin</artifactId>
 				<version>${felix.configadmin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.eventadmin</artifactId>
+				<version>${felix.eventadmin.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>

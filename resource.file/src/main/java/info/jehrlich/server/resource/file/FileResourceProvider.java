@@ -39,8 +39,8 @@ public class FileResourceProvider implements ResourceProvider
 	private static final String ROOTPATH = "rootPath";
 
 	// Service references
-	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL_UNARY)
-	private volatile MimeTypeService mimeTypeService;
+	@Reference(policy = ReferencePolicy.STATIC, cardinality = ReferenceCardinality.MANDATORY_UNARY)
+	private MimeTypeService mimeTypeService;
 	
 	private File rootDir;
 	private MimeType mimeService;

@@ -6,8 +6,9 @@ import java.util.Map;
 import org.apache.sling.commons.mime.MimeTypeService;
 
 /**
- * Utility class for mime-type detection. It uses Sling {@link MimeTypeService} if available or
- * falls back to a simple file extension based approach that only knows a few mime-types
+ * Utility class for mime-type detection. It uses Sling {@link MimeTypeService} to detect mimetypes.
+ * For testing puuposes it also provides a simple file extension based approach that only knows a
+ * few mime-types
  * 
  */
 public class MimeType
