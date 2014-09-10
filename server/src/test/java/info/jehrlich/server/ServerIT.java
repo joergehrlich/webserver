@@ -56,10 +56,11 @@ public class ServerIT
 //					.bundleVersion("4.3.5")
 //					.exports("*;version=4.3.5").noStart(),
 				mavenBundle("org.apache.sling", "org.apache.sling.commons.threads", "3.2.0"),
+				mavenBundle("org.apache.sling", "org.apache.sling.commons.mime", "2.1.8"),
 				mavenBundle("org.slf4j", "slf4j-api", "1.7.7"), 
+				mavenBundle("org.slf4j", "slf4j-simple", "1.7.7").noStart(),
 				mavenBundle("org.rendersnake", "rendersnake", "1.8"), 
 				mavenBundle("org.apache.commons", "commons-lang3", "3.3.2"), 
-				mavenBundle("org.slf4j", "slf4j-simple", "1.7.7").noStart(),
 				mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.0"),
 				mavenBundle("org.apache.felix", "org.apache.felix.configadmin", "1.8.0"),
 				url("reference:file:" + baseDir + "/target/classes"), // the actual bundle to test
