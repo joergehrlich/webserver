@@ -3,6 +3,12 @@ package info.jehrlich.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Base class for connections the server shall handle.
+ * A {@link Connection} will be emitted by a {@link Connector}
+ * @author jehrlich
+ *
+ */
 public abstract class Connection implements Runnable
 {
 	private final Logger LOG = LoggerFactory.getLogger(getClass());

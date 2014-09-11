@@ -2,7 +2,6 @@ package info.jehrlich.server.impl;
 
 import info.jehrlich.server.resource.Resource;
 import info.jehrlich.server.resource.ResourceAccessException;
-import info.jehrlich.server.resource.ResourceException;
 import info.jehrlich.server.resource.ResourceNotFoundException;
 
 import java.io.IOException;
@@ -20,13 +19,17 @@ import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpRequestHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * Handles the actual content part of the request.
+ * The implementation is pretty minimal and handles only a few HEAD, GET and POST cases.
+ *
+ */
 public class HttpContentHandler implements HttpRequestHandler
 {
-	private final Logger LOG = LoggerFactory.getLogger(getClass());
-	
+	/**
+	 * @see HttpRequestHandler.(HttpRequest, HttpResponse, HttpContext)
+	 */
 	public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException
 	{
 		String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
@@ -42,7 +45,6 @@ public class HttpContentHandler implements HttpRequestHandler
 	
 			try
 			{
-				// set body
 				if ("GET".equals(method) || "HEAD".equals(method) )
 				{
 					if (!res.exists())
@@ -54,20 +56,27 @@ public class HttpContentHandler implements HttpRequestHandler
 						throw new ResourceAccessException(); 
 					}
 					
-//					response.setHeader(HttpHeaders.CONTENT_TYPE, res.getContentType());
-//					response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(res.getContentLength()));
-					
 					if( "GET".equals(method) )
 					{
 						InputStreamEntity body = new InputStreamEntity(res.getContent());
 						body.setContentType(new BasicHeader(HttpHeaders.CONTENT_TYPE, res.getContentType()));
 						response.setEntity(body);
 					}
+					else
+					{
+						response.setHeader(HttpHeaders.CONTENT_TYPE, res.getContentType());
+						response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(res.getContentLength()));
+					}
 				}
 				else if ("POST".equals(method))
 				{
 					if (request instanceof HttpEntityEnclosingRequest)
 					{
+						if( !res.canWrite() )
+						{
+							throw new ResourceAccessException(); 
+						}
+						
 						HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
 						entity.writeTo(res.getContentWriter());
 					}
@@ -87,16 +96,15 @@ public class HttpContentHandler implements HttpRequestHandler
 			{
 				response.setStatusCode(HttpStatus.SC_FORBIDDEN);
 			}
-			catch (ResourceException e)
-			{
-				response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-			}
 		}
 		else
 		{
 			// If no resource is available, return 404
 			response.setStatusCode(HttpStatus.SC_NOT_FOUND);
 		}
+		
+		// Flag that the request is handled
+		context.setAttribute("isHandled", true);
 	}
 
 }

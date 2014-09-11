@@ -9,9 +9,10 @@ package info.jehrlich.server;
 public interface Handler
 {
 	/**
+	 * Handles the given {@link Connection}.
 	 * @param conn
-	 *            The Connection is a wrapper around the actual base connection which must be
-	 *            retrieved by the handler
+	 *            The concrete Connection should be a wrapper around the actual base connection
+	 *            which would be handler specific
 	 */
 	public void handle(Connection conn);
 
