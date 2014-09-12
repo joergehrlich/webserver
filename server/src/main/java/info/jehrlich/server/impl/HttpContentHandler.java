@@ -72,7 +72,7 @@ public class HttpContentHandler implements HttpRequestHandler
 				{
 					if (request instanceof HttpEntityEnclosingRequest)
 					{
-						if( !res.canWrite() )
+						if( res.exists() && ! res.canWrite() )
 						{
 							throw new ResourceAccessException(); 
 						}
