@@ -36,8 +36,8 @@ public class ServerIT
 	{
 		String baseDir = PathUtils.getBaseDir();
 		return options(
-				mavenBundle("info.jehrlich", "resource.api", "0.0.1-SNAPSHOT"),
-				mavenBundle("info.jehrlich", "resource.file", "0.0.1-SNAPSHOT"),
+				mavenBundle("info.jehrlich", "resource.api", "1.0.0"),
+				mavenBundle("info.jehrlich", "resource.file", "1.0.0"),
 				mavenBundle("org.apache.httpcomponents", "httpcore-osgi", "4.3.2"),
 				mavenBundle("org.apache.httpcomponents", "httpclient-osgi", "4.3.4"),
 				mavenBundle("org.apache.sling", "org.apache.sling.commons.threads", "3.2.0"),
