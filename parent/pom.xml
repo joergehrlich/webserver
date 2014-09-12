@@ -14,11 +14,9 @@
 		<felix.framework.version>4.4.1</felix.framework.version>
 		<felix.scr.annotations.version>1.9.8</felix.scr.annotations.version>
 		<felix.configadmin.version>1.8.0</felix.configadmin.version>
-		<felix.eventadmin.version>1.4.0</felix.eventadmin.version>
 		<felix.fileinstall.version>3.4.0</felix.fileinstall.version>
 		<felix.scr.version>1.8.2</felix.scr.version>
 		<felix.metatype.version>1.0.6</felix.metatype.version>
-		<felix.log.version>1.0.1</felix.log.version>
 		<org.slf4j.version>1.7.7</org.slf4j.version>
 		<maven.javadoc.version>2.9.1</maven.javadoc.version>
 
@@ -28,7 +26,6 @@
         <mockito.version>1.8.4</mockito.version>                
 	</properties>
 	
-	<!-- ================================================================    Dependency Management -->
 	
 	<dependencyManagement>
 		<dependencies>
@@ -41,11 +38,6 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.configadmin</artifactId>
 				<version>${felix.configadmin.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.eventadmin</artifactId>
-				<version>${felix.eventadmin.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
@@ -71,11 +63,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${org.slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
 			</dependency>
 
 			<!-- Test Dependencies -->
@@ -124,57 +111,60 @@
 
 	<!-- ================================================================    Global Dependencies -->
 	<dependencies>
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.framework</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.scr</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.scr.annotations</artifactId>
-				<scope>compile</scope>
-			</dependency>
-			
-			<!-- Logging -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-			</dependency>
-	        
-			 <!-- Test Dependencies -->
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-all</artifactId>
-				<scope>test</scope>
-			</dependency>
-	        <dependency>
-	            <groupId>org.ops4j.pax.exam</groupId>
-	            <artifactId>pax-exam-container-native</artifactId>
-	            <scope>test</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.ops4j.pax.exam</groupId>
-	            <artifactId>pax-exam-junit4</artifactId>
-	            <scope>test</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.ops4j.pax.exam</groupId>
-	            <artifactId>pax-exam-link-mvn</artifactId>
-	            <scope>test</scope>
-	        </dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<scope>test</scope>
-			</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+        
+		 <!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-container-native</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-mvn</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<!-- ================================================================    Plugin Management -->	
@@ -192,85 +182,21 @@
 			            <goals>
 			              <goal>scr</goal>
 			            </goals>
-			            <!-- need to set the output directory for Pax Exam tests -->
-			            <!-- 	<configuration>
-								<outputDirectory>target/classes</outputDirectory>
-							</configuration>-->
 			          </execution>
 			        </executions>
-						
 				</plugin>
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
 					<version>2.5.0</version>
 					<extensions>true</extensions>
-					<executions>
-	                <!-- This execution makes sure that the manifest is available when the tests are executed -->
-	                <!-- <execution>
-	                	<id>bundle-manifest</id>
-      					<phase>process-classes</phase>
-	                    <goals>
-	                        <goal>manifest</goal>
-	                    </goals>
-	                </execution>-->
-	            </executions>
 				</plugin>
-
-				
-				
-				<plugin>
-                	<groupId>org.apache.maven.plugins</groupId>
-                	<artifactId>maven-surefire-plugin</artifactId>
-                	<version>2.17</version>
-                	<configuration>
-                	    <!-- Excluding Integration Tests from default profile. This is actually not needed 
-                	         as by default only Test classes ending with *Test.java are executed. Mentioning 
-                	         it here explicitly so as to be aware of syntax of creating Integration Tests -->
-                    	<excludes>
-                        	<exclude>**/*IT.java</exclude>
-                    	</excludes>
-                	</configuration>
-            	</plugin>
             	
-				<!-- make eclipse happy -->
-				<!-- <plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.felix</groupId>
-										<artifactId>maven-bundle-plugin</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>manifest</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.felix</groupId>
-										<artifactId>maven-scr-plugin</artifactId>
-										<versionRange>[1.0.0,)</versionRange>
-										<goals>
-											<goal>scr</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>-->
+            	<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven.javadoc.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		
@@ -285,12 +211,7 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
-				<groupId>org.eclipse.m2e</groupId>
-				<artifactId>lifecycle-mapping</artifactId>
-			</plugin>-->
 		</plugins>
 	</build>
-	
 
 </project>

@@ -5,29 +5,33 @@ import java.io.OutputStream;
 import java.util.Date;
 
 /**
- * A {@literal Resource} exposes data through this interface to be consumed by a {@link Handler}.
+ * A {@literal Resource} exposes data through this interface to be consumed by a Server request
+ * handler.
  * 
  */
 public interface Resource
 {
 	/**
 	 * Indicates if the resource already exists
+	 * 
 	 * @return
 	 */
 	boolean exists();
 
 	/**
 	 * Indicates if the resource can be read
+	 * 
 	 * @return
 	 */
 	boolean canRead();
 
 	/**
 	 * Indicates if the resource can be written
+	 * 
 	 * @return
 	 */
 	boolean canWrite();
-	
+
 	/**
 	 * The length of the content's byte stream.
 	 * 

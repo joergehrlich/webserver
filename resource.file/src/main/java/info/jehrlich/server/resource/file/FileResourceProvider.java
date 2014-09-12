@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
  * Needs to be configured with the root path of the resources.
  * If available it will use the Sling {@link MimeTypeService} to determine Mimetypes.
  * 
- * @author jehrlich
- * 
  */
 @Service
 @Component(metatype = true)
@@ -42,8 +40,10 @@ public class FileResourceProvider implements ResourceProvider
 	@Reference(policy = ReferencePolicy.STATIC, cardinality = ReferenceCardinality.MANDATORY_UNARY)
 	private MimeTypeService mimeTypeService;
 	
-	private File rootDir;
+	// This wraps the Sling MimeTypeService, has a fallback for testing purposes
 	private MimeType mimeService;
+	
+	private File rootDir;
 	
 	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -51,6 +51,7 @@ public class FileResourceProvider implements ResourceProvider
 	{
 	}
 	
+	// --- Lifecycle methods ---
 	@Activate
 	public void activate(Map<String, String> config)
 	{
@@ -67,18 +68,12 @@ public class FileResourceProvider implements ResourceProvider
 		}
 	}
 
-	/**
-	 * 
-	 */
 	@Deactivate
 	protected void deactivate()
 	{
 		// Nothing to do
 	}
 
-	/**
-	 * 
-	 */
 	@Modified
 	private void modified(Map<String, String> config)
 	{

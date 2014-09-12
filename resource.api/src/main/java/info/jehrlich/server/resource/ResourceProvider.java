@@ -3,8 +3,6 @@ package info.jehrlich.server.resource;
 /**
  * Interface to obtain access to a {@link Resource}
  * 
- * @author jehrlich
- * 
  */
 public interface ResourceProvider
 {

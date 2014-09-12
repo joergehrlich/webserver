@@ -40,10 +40,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.eventadmin</artifactId>
-		</dependency>
-		<dependency>
 		    <groupId>org.apache.felix</groupId>
 		    <artifactId>org.apache.felix.fileinstall</artifactId>
 		</dependency>
