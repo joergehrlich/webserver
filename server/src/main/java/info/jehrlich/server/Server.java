@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
  * Threadpool to execute connectors and dispatch requests. It can be configured with Configuration
  * Manager.
  * 
- * @author jehrlich
- * 
  */
 @Component(metatype = true)
 public class Server
@@ -50,7 +48,10 @@ public class Server
 	private ThreadPoolManager tpManager;
 
 	// But it could still handle requests, even if no resources are registered
-	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL_UNARY)
+	@Reference(policy = ReferencePolicy.DYNAMIC, 
+				cardinality = ReferenceCardinality.OPTIONAL_UNARY, 
+				bind="setProvider", 
+				unbind="unsetProvider")
 	private volatile ResourceProvider resourceProvider;
 
 	// --- server variables ---
@@ -84,8 +85,9 @@ public class Server
 			connections = new HashSet<Connection>();
 
 			// resourceProvider could be null if no provider has been activated in the system
-			handler = new HTTPHandler(resourceProvider);
-
+			handler = new HTTPHandler();
+			handler.setResourceProvider(resourceProvider);
+			
 			threadpool = tpManager.get(Server.class.getCanonicalName());
 
 			connector = SocketConnector.configurator
@@ -145,6 +147,26 @@ public class Server
 		activate(config);
 	}
 
+	// --- Service methods ---
+	void setProvider(ResourceProvider provider)
+	{
+		resourceProvider = provider;
+		// What about running requests
+		if( handler != null)
+		{
+			handler.setResourceProvider(provider);
+		}
+	}
+	
+	void unsetProvider(ResourceProvider provider)
+	{
+		resourceProvider = null;
+		if(handler != null)
+		{
+			handler.unsetResourceProvider();
+		}
+	}
+	
 	// --- Connection methods ---
 	/**
 	 * Executes the given job in the ThreadPool.

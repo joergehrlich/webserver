@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
  * executed in order on the request. It also retrieves the {@link Resource} from the provided
  * {@link ResourceProvider} and hands it to the request handling chain.
  * 
- * @author jehrlich
- * 
  */
 public class HTTPHandler implements Handler, HttpRequestHandler
 {
@@ -52,7 +50,7 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 	 */
 	private List<HttpRequestHandler> handlerList;
 
-	public HTTPHandler(ResourceProvider provider)
+	public HTTPHandler()
 	{
 		// Set up the HTTP protocol processor
 		HttpProcessor httpproc = HttpProcessorBuilder.create()
@@ -70,7 +68,6 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 		// Set up the HTTP service
 		httpService = new HttpService(httpproc, reqistry);
 
-		this.provider = provider;
 
 		// set up list of handlers that shall be used
 		handlerList = new ArrayList<HttpRequestHandler>();
@@ -98,9 +95,9 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 
 	/**
 	 * Is invoked by the HttpCore {@link HttpService}. Retrieves the Resource and invokes the
-	 * handler chain.
+	 * handler chain. Has to be synchronized with the ResourceProvider methods
 	 */
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException,
+	public synchronized void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException,
 			IOException
 	{
 		String target = request.getRequestLine().getUri();
@@ -129,4 +126,19 @@ public class HTTPHandler implements Handler, HttpRequestHandler
 		}
 	}
 
+	/**
+	 * @see Handler#setResourceProvider(ResourceProvider)
+	 */
+	public synchronized void setResourceProvider(ResourceProvider provider)
+	{
+		this.provider = provider;
+	}
+	
+	/**
+	 * @see Handler#unsetResourceProvider(ResourceProvider)
+	 */
+	public synchronized void unsetResourceProvider()
+	{
+		provider = null;
+	}
 }

@@ -40,7 +40,8 @@ public class HttpHandlerTest
 		provider = new FileResourceProvider();
 		provider.activate(config);
 		
-		handler = new HTTPHandler(provider);
+		handler = new HTTPHandler();
+		handler.setResourceProvider(provider);
 	}
 	
 	// Helper to create request
