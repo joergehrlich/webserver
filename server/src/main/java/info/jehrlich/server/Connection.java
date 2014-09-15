@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for connections the server shall handle.
  * A {@link Connection} will be emitted by a {@link Connector}
- * @author jehrlich
  *
  */
 public abstract class Connection implements Runnable

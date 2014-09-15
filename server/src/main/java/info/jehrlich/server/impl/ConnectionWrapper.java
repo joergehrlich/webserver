@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Concrete implementation of a Connection that wraps the HttpCore Connection. 
- * @author jehrlich
  *
  */
 public class ConnectionWrapper extends Connection

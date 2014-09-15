@@ -2,7 +2,6 @@ package info.jehrlich.server;
 
 /**
  * Should be implemented by a concrete {@link Connector} to create instances of the Connector.
- * @author jehrlich
  *
  */
 public interface ConnectorConfigurator
